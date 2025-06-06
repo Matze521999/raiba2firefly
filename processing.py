@@ -3,19 +3,18 @@ import csv
 def process_csv_files(input_paths, output_path):
     all_rows = []
 
-    # Lese alle Dateien ein und merke, woher jede Zeile kommt
+    # CSVs einlesen mit Quell-Datei
     for path in input_paths:
         with open(path, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f, delimiter=';')
-            rows = list(reader)
-            for row in rows:
+            for row in reader:
                 row['__source_file'] = path
                 all_rows.append(row)
 
-    matched = set()
+    matched_ids = set()
+    filtered_rows = []
 
-    # Transferbuchungen erkennen
-    for row in all_rows:
+    for i, row in enumerate(all_rows):
         if row['Betrag'] == '' or row['Waehrung'] != 'EUR':
             continue
 
@@ -24,13 +23,10 @@ def process_csv_files(input_paths, output_path):
         except ValueError:
             continue
 
-        if amount < 0:
-            for candidate in all_rows:
-                if (
-                    candidate == row or
-                    id(candidate) in matched or
-                    id(row) in matched
-                ):
+        # Nur negative Beträge → nur Ausgänge prüfen
+        if amount < 0 and i not in matched_ids:
+            for j, candidate in enumerate(all_rows):
+                if i == j or j in matched_ids:
                     continue
 
                 try:
@@ -38,41 +34,32 @@ def process_csv_files(input_paths, output_path):
                 except ValueError:
                     continue
 
+                # Prüfkriterien:
                 if (
                     candidate_amount == -amount and
-                    candidate['__source_file'] != row['__source_file']
+                    row['Buchungstag'] == candidate['Buchungstag'] and
+                    row['Valutadatum'] == candidate['Valutadatum'] and
+                    row['IBAN Auftragskonto'] == candidate['IBAN Zahlungsbeteiligter'] and
+                    row['IBAN Zahlungsbeteiligter'] == candidate['IBAN Auftragskonto']
                 ):
-                    # Beide Buchungen markieren
-                    matched.add(id(candidate))
-                    matched.add(id(row))
+                    # Markieren
                     row['Bemerkung'] = 'Transferbuchung'
                     candidate['Bemerkung'] = 'Transferbuchung'
+                    matched_ids.add(i)
+                    matched_ids.add(j)
+                    filtered_rows.append(row)  # nur ausgehende Buchung behalten
                     break
-
-    # Nur noch Zeilen behalten, die keine positiven Transferbuchungen sind
-    filtered_rows = []
-    for row in all_rows:
-        try:
-            betrag = float(row['Betrag'].replace('.', '').replace(',', '.'))
-        except ValueError:
-            continue
-
-        if not (
-            row.get('Bemerkung') == 'Transferbuchung' and betrag > 0
-        ):
+        elif i not in matched_ids:
             filtered_rows.append(row)
 
-    # Feldnamen für CSV-Ausgabe
+    # CSV schreiben
     fieldnames = list(filtered_rows[0].keys())
     if '__source_file' in fieldnames:
         fieldnames.remove('__source_file')
 
-    # Vor dem Schreiben: entferne Hilfsspalte
     for row in filtered_rows:
-        if '__source_file' in row:
-            del row['__source_file']
+        row.pop('__source_file', None)
 
-    # CSV-Datei schreiben
     with open(output_path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=';')
         writer.writeheader()
