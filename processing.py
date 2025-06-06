@@ -53,14 +53,20 @@ def process_csv_files(input_paths, output_path):
             filtered_rows.append(row)
 
     # CSV schreiben
-    fieldnames = list(filtered_rows[0].keys())
-    if '__source_file' in fieldnames:
-        fieldnames.remove('__source_file')
-
-    for row in filtered_rows:
-        row.pop('__source_file', None)
+ fieldnames = list(all_rows[0].keys())
+    fieldnames.remove('__source_file')
 
     with open(output_path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=';')
         writer.writeheader()
-        writer.writerows(filtered_rows)
+        for row in all_rows:
+            if row in matched:
+                # Nur Ausgangsbuchung behalten (Betrag negativ)
+                betrag = row['Betrag'].replace('.', '').replace(',', '.')
+                if float(betrag) < 0:
+                    del row['__source_file']
+                    writer.writerow(row)
+            elif row not in matched:
+                # Normale Buchungen übernehmen
+                del row['__source_file']
+                writer.writerow(row)
