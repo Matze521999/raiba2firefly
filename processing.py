@@ -53,14 +53,14 @@ def process_csv_files(input_paths, output_path):
             filtered_rows.append(row)
 
 # CSV schreiben
-fieldnames = list(filtered_rows[0].keys())
+fieldnames = list(all_rows[0].keys())
 if '__source_file' in fieldnames:
     fieldnames.remove('__source_file')
 
 with open(output_path, 'w', newline='', encoding='utf-8') as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=';')
     writer.writeheader()
-    for row in filtered_rows:
+    for row in all_rows:
         # Transfer: Nur negative Buchung behalten
         if row.get('Bemerkung') == 'Transferbuchung':
             betrag = row['Betrag'].replace('.', '').replace(',', '.')
