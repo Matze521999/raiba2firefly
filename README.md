@@ -17,8 +17,7 @@ Ein schlankes Python-Webtool zur Zusammenführung mehrerer CSV-Dateien von Bankk
 ---
 
 ## 🖼️ Web-GUI
-
-![Screenshot der Web-GUI](screenshot.png) <!-- Optional: Screenshot hinzufügen -->
+- simpel, aber vorhanden ;)
 
 ---
 
