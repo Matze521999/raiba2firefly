@@ -30,10 +30,10 @@ Ein minimalistisches Web-Tool zur Erkennung und Bereinigung von internen Transfe
 
 ## Format der CSV-Dateien
 
-CSV-Dateien müssen mit `;` getrennt sein und folgendes Format haben:
+CSV-Dateien müssen mit `;` getrennt sein und folgendes Format haben (Raiffeisenbank CSV-Export):
 
 ```
-Bezeichnung Auftragskonto;IBAN Auftragskonto;...;Betrag;Waehrung;...
+Bezeichnung Auftragskonto;IBAN Auftragskonto;BIC Auftragskonto;Bankname Auftragskonto;Buchungstag;Valutadatum;Name Zahlungsbeteiligter;IBAN Zahlungsbeteiligter;BIC (SWIFT-Code) Zahlungsbeteiligter;Buchungstext;Verwendungszweck;Betrag;Waehrung;Saldo nach Buchung;Bemerkung;Gekennzeichneter Umsatz;Glaeubiger ID;Mandatsreferenz
 ```
 
 Nur EUR-Umsätze mit gültigen Beträgen werden verarbeitet.
