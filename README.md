@@ -42,7 +42,7 @@ csv-transfer-gui/
 
 - **Portainer** → **Stacks** → **+ Add Stack**
 - Wähle **Git Repository**
-- Git-URL eingeben: `https://github.com/DEIN_USERNAME/DEIN_REPO`
+- Git-URL eingeben: `https://github.com/Matze521999/raiba2firefly`
 - Stelle sicher, dass das Repository diese Dateien enthält:
   - `Dockerfile`
   - `docker-compose.yml`
@@ -60,7 +60,7 @@ http://<deine-server-ip>:5000
 ## ⚙️ Lokal testen (ohne Docker)
 
 ```bash
-git clone https://github.com/DEIN_USERNAME/DEIN_REPO.git
+git clone https://github.com/Matze521999/raiba2firefly.git
 cd DEIN_REPO
 python3 -m venv venv
 source venv/bin/activate
@@ -95,9 +95,7 @@ Bezeichnung Auftragskonto;IBAN Auftragskonto;...;Buchungstag;...;Betrag;...;Beme
 
 ## 👤 Autor
 
-Matthias  
-📍 Süddeutschland  
-💼 IT-Systemintegration, Netzwerke, Server, Automatisierung
+Matze521999
 
 ---
 
