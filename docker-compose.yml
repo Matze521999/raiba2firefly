@@ -1,11 +1,8 @@
-FROM python:3.11-slim
+version: '3.8'
 
-WORKDIR /app
-
-COPY . /app
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-EXPOSE 5000
-
-CMD ["python", "app.py"]
+services:
+  csv-transfer-gui:
+    build: .
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
