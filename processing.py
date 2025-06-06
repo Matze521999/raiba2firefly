@@ -30,11 +30,21 @@ def process_csv_files(input_paths, output_path):
                 if id(candidate) in matched or candidate == row:
                     continue
                 if candidate['Betrag'].replace('.', '').replace(',', '.') == f"{-amount:.2f}" and candidate['__source_file'] != row['__source_file']:
-                    matched.add(id(candidate))
-                    matched.add(id(row))
+                    matched.add(id(candidate))  # Positive Buchung (Empfänger) — wird später gelöscht
+                    matched.add(id(row))       # Negative Buchung (Sender)
                     candidate['Bemerkung'] = 'Transferbuchung'
                     row['Bemerkung'] = 'Transferbuchung'
                     break
+
+    # Filtere alle rows: Entferne positive Transferbuchungen
+    filtered_rows = [
+        row for row in all_rows
+        if not (
+            row.get('Bemerkung') == 'Transferbuchung' and
+            float(row['Betrag'].replace('.', '').replace(',', '.')) > 0
+        )
+    ]
+
 
     fieldnames = list(all_rows[0].keys())
     fieldnames.remove('__source_file')
@@ -42,6 +52,6 @@ def process_csv_files(input_paths, output_path):
     with open(output_path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=';')
         writer.writeheader()
-        for row in all_rows:
+    for row in filtered_rows:
             del row['__source_file']
             writer.writerow(row)
