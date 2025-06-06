@@ -52,21 +52,21 @@ def process_csv_files(input_paths, output_path):
         elif i not in matched_ids:
             filtered_rows.append(row)
 
-# CSV schreiben
-fieldnames = list(all_rows[0].keys())
-if '__source_file' in fieldnames:
-    fieldnames.remove('__source_file')
-
-with open(output_path, 'w', newline='', encoding='utf-8') as f:
-    writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=';')
-    writer.writeheader()
-    for row in all_rows:
-        # Transfer: Nur negative Buchung behalten
-        if row.get('Bemerkung') == 'Transferbuchung':
-            betrag = row['Betrag'].replace('.', '').replace(',', '.')
-            if float(betrag) > 0:
-                continue  # positive Seite des Transfers überspringen
-
-        row.pop('__source_file', None)
-        writer.writerow(row)
+    # CSV schreiben
+    fieldnames = list(all_rows[0].keys())
+    if '__source_file' in fieldnames:
+        fieldnames.remove('__source_file')
+    
+    with open(output_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=';')
+        writer.writeheader()
+        for row in all_rows:
+            # Transfer: Nur negative Buchung behalten
+            if row.get('Bemerkung') == 'Transferbuchung':
+                betrag = row['Betrag'].replace('.', '').replace(',', '.')
+                if float(betrag) > 0:
+                    continue  # positive Seite des Transfers überspringen
+    
+            row.pop('__source_file', None)
+            writer.writerow(row)
 
