@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>CSV Transfer-Erkennung</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    #dropzone {
+      border: 2px dashed #007bff;
+      padding: 40px;
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    #dropzone.dragover {
+      background-color: #e7f1ff;
+    }
+  </style>
+</head>
+<body>
+  <h2>CSV Transfer-Erkennung</h2>
+  <form id="upload-form">
+    <div id="dropzone">Dateien hierher ziehen oder klicken</div>
+    <input type="file" id="file-input" name="files[]" multiple hidden accept=".csv">
+    <button type="submit">Verarbeiten</button>
+  </form>
+
+  <script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    let files = [];
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      files = Array.from(e.dataTransfer.files);
+      dropzone.textContent = files.map(f => f.name).join(', ');
+    });
+    fileInput.addEventListener('change', () => {
+      files = Array.from(fileInput.files);
+      dropzone.textContent = files.map(f => f.name).join(', ');
+    });
+
+    document.getElementById('upload-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (files.length < 2) {
+        alert('Bitte mindestens zwei CSV-Dateien auswählen.');
+        return;
+      }
+
+      const formData = new FormData();
+      files.forEach(f => formData.append('files[]', f));
+
+      const response = await fetch('/upload', { method: 'POST', body: formData });
+      if (response.ok) {
+        const blob = await response.blob();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'bereinigt.csv';
+        a.click();
+      } else {
+        alert('Fehler beim Hochladen: ' + (await response.text()));
+      }
+    });
+  </script>
+</body>
+</html>
