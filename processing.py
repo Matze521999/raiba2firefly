@@ -27,11 +27,11 @@ def process_csv_files(input_paths, output_path):
 
         if amount < 0:
             for candidate in all_rows:
-                if candidate in matched or candidate == row:
+                if id(candidate) in matched or candidate == row:
                     continue
                 if candidate['Betrag'].replace('.', '').replace(',', '.') == f"{-amount:.2f}" and candidate['__source_file'] != row['__source_file']:
-                    matched.add(candidate)
-                    matched.add(row)
+                    matched.add(id(candidate))
+                    matched.add(id(row))
                     candidate['Bemerkung'] = 'Transferbuchung'
                     row['Bemerkung'] = 'Transferbuchung'
                     break
