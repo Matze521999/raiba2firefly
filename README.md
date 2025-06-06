@@ -1,104 +1,38 @@
-# 💸 CSV Transfer GUI für Firefly III
+# CSV Transfer GUI
 
-Ein schlankes Python-Webtool zur Zusammenführung mehrerer CSV-Dateien von Bankkonten. Es erkennt interne Umbuchungen automatisch und bereitet die Daten so auf, dass sie korrekt als **Transfers** in [Firefly III](https://www.firefly-iii.org/) importiert werden können.
+Ein minimalistisches Web-Tool zur Erkennung und Bereinigung von internen Transferbuchungen in CSV-Dateien von Bankkonten.
 
----
+## Funktionen
 
-## 🚀 Funktionen
+- Upload von 2 bis beliebig vielen CSV-Dateien per Drag & Drop
+- Automatische Erkennung interner Umbuchungen
+- Zusammenführung der Daten in eine bereinigte CSV
+- Download der Ergebnisdatei direkt nach Verarbeitung
 
-- Drag-and-Drop Upload von **mindestens 2 CSV-Dateien**
-- Automatische Erkennung interner Transfers zwischen eigenen Konten
-- Korrekte Zusammenführung aller Transaktionen in einer CSV-Datei
-- Weboberfläche auf Basis von Flask
-- Bereinigte Datei wird automatisch heruntergeladen
-- Alle temporären Daten werden sicher gelöscht
-- Bereit für den Einsatz via **Docker & Portainer**
+## Verwendung
 
----
+1. Projekt starten (Docker):
+   ```bash
+   docker compose up
+   ```
 
-## 🖼️ Web-GUI
-- simpel, aber vorhanden ;)
+2. Webbrowser öffnen:
+   ```
+   http://<IP-Adresse>:5000
+   ```
 
----
+3. CSV-Dateien hochladen und bereinigte Datei herunterladen
 
-## 📁 Verzeichnisstruktur
+## Format der CSV-Dateien
+
+CSV-Dateien müssen mit `;` getrennt sein und folgendes Format haben:
 
 ```
-csv-transfer-gui/
-├── app.py                  # Flask-Server & Upload-Handling
-├── processing.py           # Logik zum Verarbeiten und Bereinigen der CSVs
-├── requirements.txt        # Abhängigkeiten (Flask, pandas, etc.)
-├── Dockerfile              # Docker-Containerdefinition
-├── docker-compose.yml      # Für Deployment via Portainer
-├── templates/
-│   └── index.html          # Weboberfläche
+Bezeichnung Auftragskonto;IBAN Auftragskonto;...;Betrag;Waehrung;...
 ```
 
----
+Nur EUR-Umsätze mit gültigen Beträgen werden verarbeitet.
 
-## 🐳 Deployment via Portainer
+## Lizenz
 
-### 1. GitHub-Repo in Portainer verwenden
-
-- **Portainer** → **Stacks** → **+ Add Stack**
-- Wähle **Git Repository**
-- Git-URL eingeben: `https://github.com/Matze521999/raiba2firefly`
-- Stelle sicher, dass das Repository diese Dateien enthält:
-  - `Dockerfile`
-  - `docker-compose.yml`
-- **Deploy the Stack**
-
-### 2. Weboberfläche aufrufen
-
-Gehe auf:  
-```
-http://<deine-server-ip>:5000
-```
-
----
-
-## ⚙️ Lokal testen (ohne Docker)
-
-```bash
-git clone https://github.com/Matze521999/raiba2firefly.git
-cd DEIN_REPO
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python app.py
-```
-
-Dann im Browser: `http://localhost:5000`
-
----
-
-## 📝 Anforderungen an CSV-Dateien
-
-Die hochgeladenen CSV-Dateien müssen dem folgenden Aufbau entsprechen (Bankformat):
-
-```csv
-Bezeichnung Auftragskonto;IBAN Auftragskonto;...;Buchungstag;...;Betrag;...;Bemerkung
-```
-
-- Trennzeichen: **Semikolon (;)**
-- Bei internen Transfers wird automatisch `"Transferbuchung"` in der Spalte **Bemerkung** ergänzt
-
----
-
-## 🛡️ Datenschutz & Sicherheit
-
-- Keine Speicherung von Bankdaten auf dem Server
-- Temporäre Dateien werden nach dem Herunterladen sofort gelöscht
-- Kein externer Netzwerkzugriff
-
----
-
-## 👤 Autor
-
-Matze521999
-
----
-
-## 📄 Lizenz
-
-MIT License – frei nutzbar & anpassbar
+MIT
