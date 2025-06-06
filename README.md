@@ -1,5 +1,10 @@
 # CSV Transfer GUI
 
+Ein winziges Vorwort zu diesem noch winzigeren Projekt:
+Dieses Tool wurde für die private Verwendung dreckig in 15mins heruntergeschrieben.
+Bugs, Fehler, Abstürze nicht auszuschließen. Für meine spezifischen Zwecke reicht es, mehr soll es auch nicht können.
+Benutzen auf eigene Gefahr! ;)
+
 Ein minimalistisches Web-Tool zur Erkennung und Bereinigung von internen Transferbuchungen in CSV-Dateien von Bankkonten.
 
 ## Funktionen
@@ -18,7 +23,7 @@ Ein minimalistisches Web-Tool zur Erkennung und Bereinigung von internen Transfe
 
 2. Webbrowser öffnen:
    ```
-   http://<IP-Adresse>:5000
+   http://localhost:5000
    ```
 
 3. CSV-Dateien hochladen und bereinigte Datei herunterladen
